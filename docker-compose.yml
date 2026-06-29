@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - UVICORN_RELOAD=true
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./react-app:/react-app # Mount react-app folder correctly
+      - /react-app/node_modules # Don't overwrite node_modules
+    working_dir: /react-app
+    command: [ "npm", "run", "dev" ]
+    depends_on:
+      - backend
